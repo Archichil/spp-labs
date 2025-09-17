@@ -5,9 +5,10 @@ export interface TaskCardProps {
   task: Task
   onEdit?: (updates: Partial<Omit<Task, 'id'>>) => void
   onDelete?: () => void
+  disabled?: boolean
 }
 
-export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
+export default function TaskCard({ task, onEdit, onDelete, disabled = false }: TaskCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [form, setForm] = useState({
     title: task.title,
@@ -17,13 +18,13 @@ export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   })
 
   function startEdit() {
-    if (!onEdit) return
+    if (!onEdit || disabled) return
     setForm({ title: task.title, description: task.description, assignee: task.assignee, status: task.status })
     setIsEditing(true)
   }
 
   function saveEdit() {
-    if (!onEdit) return
+    if (!onEdit || disabled) return
     const updates = {
       title: form.title.trim(),
       description: form.description.trim(),
@@ -71,8 +72,20 @@ export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
           <option value="done">Done</option>
         </select>
         <div className="flex gap-2">
-          <button onClick={saveEdit} className="rounded bg-indigo-600 px-2 py-1 text-xs text-white hover:bg-indigo-700">Сохранить</button>
-          <button onClick={cancelEdit} className="rounded bg-gray-200 px-2 py-1 text-xs">Отмена</button>
+          <button 
+            onClick={saveEdit} 
+            className="rounded bg-indigo-600 px-2 py-1 text-xs text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={disabled}
+          >
+            Сохранить
+          </button>
+          <button 
+            onClick={cancelEdit} 
+            className="rounded bg-gray-200 px-2 py-1 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={disabled}
+          >
+            Отмена
+          </button>
         </div>
       </div>
     )
@@ -88,7 +101,8 @@ export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
               onClick={startEdit}
               aria-label="Редактировать"
               title="Редактировать"
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={disabled}
             >
               ✎
             </button>
@@ -98,7 +112,8 @@ export default function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
               onClick={onDelete}
               aria-label="Удалить"
               title="Удалить"
-              className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={disabled}
             >
               🗑
             </button>
