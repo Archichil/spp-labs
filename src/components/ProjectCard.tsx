@@ -1,4 +1,5 @@
 import type { Project } from '../types'
+import { Link } from 'react-router-dom'
 
 export interface ProjectCardProps {
   project: Project
@@ -7,15 +8,16 @@ export interface ProjectCardProps {
 
 export default function ProjectCard({ project, onOpen }: ProjectCardProps) {
   return (
-    <button
+    <Link
+      to={`/projects/${project.id}`}
       onClick={() => onOpen(project.id)}
-      className="w-full rounded-lg border border-gray-200 bg-white p-4 text-left shadow-sm hover:shadow transition-shadow"
+      className="block w-full rounded-lg border border-gray-200 bg-white p-4 text-left shadow-sm hover:shadow transition-shadow"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">{project.name}</h3>
         <span className="text-sm text-gray-500">{project.tasks.length} задач</span>
       </div>
-    </button>
+    </Link>
   )
 }
 

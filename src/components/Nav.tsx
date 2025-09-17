@@ -1,24 +1,29 @@
 import { useState } from "react"
+import { Link, useLocation } from 'react-router-dom'
 
 type PageKey = "home" | "projects" | "profile"
 
-export interface NavProps {
-  current: PageKey
-  onChange: (page: PageKey) => void
-}
-
-export default function Nav({ current, onChange }: NavProps) {
+export default function Nav() {
   const [hovered, setHovered] = useState<PageKey | null>(null)
+  const location = useLocation()
+
+  const isActive = (key: PageKey) => {
+    const path = location.pathname
+    if (key === 'home') return path === '/'
+    if (key === 'projects') return path.startsWith('/projects')
+    if (key === 'profile') return path.startsWith('/profile')
+    return false
+  }
 
   const item = (key: PageKey, label: string) => (
-    <button
+    <Link
       key={key}
-      onClick={() => onChange(key)}
+      to={key === 'home' ? '/' : key === 'projects' ? '/projects' : '/profile'}
       onMouseEnter={() => setHovered(key)}
       onMouseLeave={() => setHovered(null)}
       className={
         `mr-2 rounded-md px-3 py-1.5 border text-sm transition-colors ` +
-        (current === key
+        (isActive(key)
           ? `border-indigo-500 bg-indigo-50 text-indigo-700`
           : hovered === key
             ? `border-gray-300 bg-gray-100`
@@ -26,7 +31,7 @@ export default function Nav({ current, onChange }: NavProps) {
       }
     >
       {label}
-    </button>
+    </Link>
   )
 
   return (
