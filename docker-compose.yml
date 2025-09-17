@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build: .
+    container_name: lab-frontend
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+
