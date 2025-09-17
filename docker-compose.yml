@@ -1,7 +1,7 @@
 services:
   frontend:
     build: .
-    container_name: lab-frontend
+    container_name: frontend
     ports:
       - "8080:80"
     environment:

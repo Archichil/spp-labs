@@ -1,6 +1,4 @@
 # Dockerfile
-
-# Step 1: Use a Node.js image to build the app
 FROM node:18 as builder
 
 # Set working directory inside the container
@@ -19,14 +17,11 @@ COPY . .
 RUN npm run build
 
 
-# Step 2: Use an Nginx image to serve the static files
 FROM nginx:alpine
 
 # Copy the build files from the builder stage to the Nginx web directory
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port 80
 EXPOSE 80
 
-# Start Nginx server
 CMD ["nginx", "-g", "daemon off;"]
