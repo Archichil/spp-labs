@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import type { Task } from '../types'
 import TaskCard from '../components/TaskCard'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -21,7 +21,6 @@ export default function ProjectBoard() {
     { key: 'done', title: 'Done' },
   ] as const), [])
 
-  // useMemo вызывается вне условий!
   const tasksByStatus = useMemo(() => {
     if (!project) {
       return {

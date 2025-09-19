@@ -31,19 +31,15 @@ async function fetchApi(endpoint: string, options: RequestInit = {}) {
   return response.json()
 }
 
-// Projects API
 export const projectsApi = {
-  // Get all projects
   async getAll(): Promise<Project[]> {
     return fetchApi('/projects')
   },
 
-  // Get single project
   async getById(id: string): Promise<Project> {
     return fetchApi(`/projects/${id}`)
   },
 
-  // Create new project
   async create(name: string): Promise<Project> {
     return fetchApi('/projects', {
       method: 'POST',
@@ -51,7 +47,6 @@ export const projectsApi = {
     })
   },
 
-  // Update project
   async update(id: string, name: string): Promise<Project> {
     return fetchApi(`/projects/${id}`, {
       method: 'PUT',
@@ -59,7 +54,6 @@ export const projectsApi = {
     })
   },
 
-  // Delete project
   async delete(id: string): Promise<Project> {
     return fetchApi(`/projects/${id}`, {
       method: 'DELETE',
@@ -67,19 +61,15 @@ export const projectsApi = {
   },
 }
 
-// Tasks API
 export const tasksApi = {
-  // Get all tasks for a project
   async getAll(projectId: string): Promise<Task[]> {
     return fetchApi(`/projects/${projectId}/tasks`)
   },
 
-  // Get single task
   async getById(projectId: string, taskId: string): Promise<Task> {
     return fetchApi(`/projects/${projectId}/tasks/${taskId}`)
   },
 
-  // Create new task
   async create(projectId: string, task: Omit<Task, 'id'>): Promise<Task> {
     return fetchApi(`/projects/${projectId}/tasks`, {
       method: 'POST',
@@ -87,7 +77,6 @@ export const tasksApi = {
     })
   },
 
-  // Update task
   async update(projectId: string, taskId: string, updates: Partial<Omit<Task, 'id'>>): Promise<Task> {
     return fetchApi(`/projects/${projectId}/tasks/${taskId}`, {
       method: 'PUT',
@@ -95,7 +84,6 @@ export const tasksApi = {
     })
   },
 
-  // Delete task
   async delete(projectId: string, taskId: string): Promise<Task> {
     return fetchApi(`/projects/${projectId}/tasks/${taskId}`, {
       method: 'DELETE',

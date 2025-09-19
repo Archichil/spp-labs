@@ -1,3 +1,5 @@
+export const MS_PER_DAY = 24 * 60 * 60 * 1000
+
 export function formatDateISO(date: Date | number | string): string {
   const d = date instanceof Date ? date : new Date(date)
   return d.toISOString()
@@ -11,9 +13,8 @@ export function formatDateHuman(date: Date | number | string): string {
 export function daysBetween(a: Date | number | string, b: Date | number | string): number {
   const da = a instanceof Date ? a : new Date(a)
   const db = b instanceof Date ? b : new Date(b)
-  const msPerDay = 24 * 60 * 60 * 1000 //to constant
   const diff = Math.abs(db.getTime() - da.getTime())
-  return Math.floor(diff / msPerDay)
+  return Math.floor(diff / MS_PER_DAY)
 }
 
 export function addDays(date: Date | number | string, days: number): Date {
