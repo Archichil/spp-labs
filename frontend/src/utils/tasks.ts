@@ -6,8 +6,4 @@ export interface TaskItem {
   status: TaskStatus
 }
 
-export function filterTasksByStatus(tasks: TaskItem[], status: TaskStatus): TaskItem[] {
-  return tasks.filter((t) => t.status === status)
-}
-
 

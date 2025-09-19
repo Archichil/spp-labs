@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import React, {createContext, useContext, useEffect, useMemo, useState} from 'react'
 import type { Project, Task } from '../types'
 import { projectsApi, tasksApi, ApiError } from '../services/api'
 
@@ -22,7 +22,6 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Load projects from API
   const loadProjects = async () => {
     try {
       setLoading(true)
@@ -38,7 +37,6 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // Load projects on mount
   useEffect(() => {
     loadProjects()
   }, [])
@@ -147,5 +145,3 @@ export function useProjects(): ProjectsContextValue {
   if (!ctx) throw new Error('useProjects must be used within ProjectsProvider')
   return ctx
 }
-
-
