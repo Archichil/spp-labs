@@ -1,17 +1,23 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "Backend server for projects and tasks management",
+  "name": "project-management-backend",
+  "version": "2.0.0",
+  "description": "Project Management API with MongoDB",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
+  "keywords": ["express", "mongodb", "mongoose", "rest-api"],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.2"
   }
 }
