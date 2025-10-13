@@ -1,4 +1,4 @@
-import type { Task } from '../types'
+import type { Task, ProjectMember } from '../types'
 import { useState } from 'react'
 
 export interface TaskCardProps {
@@ -6,9 +6,10 @@ export interface TaskCardProps {
   onEdit?: (updates: Partial<Omit<Task, 'id'>>) => void
   onDelete?: () => void
   disabled?: boolean
+  projectMembers?: ProjectMember[]
 }
 
-export default function TaskCard({ task, onEdit, onDelete, disabled = false }: TaskCardProps) {
+export default function TaskCard({ task, onEdit, onDelete, disabled = false, projectMembers = [] }: TaskCardProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [form, setForm] = useState({
     title: task.title,
@@ -56,12 +57,27 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false }: T
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
-        <input
-          className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-xs"
-          placeholder="Исполнитель"
-          value={form.assignee}
-          onChange={(e) => setForm({ ...form, assignee: e.target.value })}
-        />
+        {projectMembers.length > 0 ? (
+          <select
+            className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-xs"
+            value={form.assignee}
+            onChange={(e) => setForm({ ...form, assignee: e.target.value })}
+          >
+            <option value="">Выберите исполнителя</option>
+            {projectMembers.map((member) => (
+              <option key={member.id} value={member.username}>
+                {member.username} ({member.email})
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-xs"
+            placeholder="Исполнитель"
+            value={form.assignee}
+            onChange={(e) => setForm({ ...form, assignee: e.target.value })}
+          />
+        )}
         <select
           className="mb-3 w-full rounded border border-gray-300 px-2 py-1 text-xs"
           value={form.status}
