@@ -1,19 +1,45 @@
-import React, { useMemo, useState } from 'react'
-import type { Task } from '../types'
+import React, { useMemo, useState, useEffect } from 'react'
+import type { Task, ProjectMember } from '../types'
 import TaskCard from '../components/TaskCard'
+import ProjectMembers from '../components/ProjectMembers'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useProjects } from '../context/ProjectsContext'
+import { useAuth } from '../context/AuthContext'
+import { projectMembersApi } from '../services/api'
 
 export default function ProjectBoard() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { projects, addTask, updateTask, deleteTask, loading, error } = useProjects()
+  const { user } = useAuth()
+  const { projects, addTask, updateTask, deleteTask, deleteProject, loading, error } = useProjects()
   const project = projects.find(p => p.id === id)
   const [form, setForm] = useState<{ title: string; description: string; assignee: string; status: Task['status'] }>(
       { title: '', description: '', assignee: '', status: 'todo' }
   )
   const [creating, setCreating] = useState(false)
   const [updating, setUpdating] = useState<string | null>(null)
+  const [showMembers, setShowMembers] = useState(false)
+  const [projectMembers, setProjectMembers] = useState<ProjectMember[]>([])
+  const [loadingMembers, setLoadingMembers] = useState(false)
+
+  useEffect(() => {
+    async function loadMembers() {
+      if (!id) return
+      
+      setLoadingMembers(true)
+      try {
+        const members = await projectMembersApi.getMembers(id)
+        setProjectMembers(members)
+      } catch (error) {
+        console.error('Error loading project members:', error)
+        setProjectMembers([])
+      } finally {
+        setLoadingMembers(false)
+      }
+    }
+
+    void loadMembers()
+  }, [id, showMembers])
 
   const columns = useMemo(() => ([
     { key: 'todo', title: 'ToDo' },
@@ -112,10 +138,54 @@ export default function ProjectBoard() {
     }
   }
 
+  async function handleDeleteProject() {
+    if (!project) return
+    
+    if (window.confirm(`Are you sure you want to delete the project "${project.name}"? This will also delete all associated tasks.`)) {
+      try {
+        await deleteProject(project.id)
+        navigate('/projects')
+      } catch (error) {
+        console.error('Error deleting project:', error)
+        alert('Failed to delete project. You may not have permission.')
+      }
+    }
+  }
+
+  const isAdminOrManager = user?.role === 'admin' || user?.role === 'manager'
+  const isAdmin = user?.role === 'admin'
+
   return (
       <div>
         <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← К списку проектов</button>
-        <h2 className="mb-4 text-xl font-semibold">{project.name}</h2>
+        
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">{project.name}</h2>
+          <div className="flex gap-2">
+            {isAdminOrManager && (
+              <button
+                onClick={() => setShowMembers(!showMembers)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              >
+                {showMembers ? 'Hide Members' : 'Manage Members'}
+              </button>
+            )}
+            {isAdmin && (
+              <button
+                onClick={handleDeleteProject}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700"
+              >
+                Delete Project
+              </button>
+            )}
+          </div>
+        </div>
+
+        {showMembers && id && (
+          <div className="mb-6">
+            <ProjectMembers projectId={id} />
+          </div>
+        )}
 
         <div className="mb-6 rounded-md border border-gray-200 bg-white p-4">
           <h3 className="mb-3 text-base font-medium">Создать задачу</h3>
@@ -127,13 +197,19 @@ export default function ProjectBoard() {
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 disabled={creating}
             />
-            <input
+            <select
                 className="rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Исполнитель"
                 value={form.assignee}
                 onChange={(e) => setForm({ ...form, assignee: e.target.value })}
-                disabled={creating}
-            />
+                disabled={creating || loadingMembers}
+            >
+              <option value="">Выберите исполнителя</option>
+              {projectMembers.map((member) => (
+                <option key={member.id} value={member.username}>
+                  {member.username} ({member.email})
+                </option>
+              ))}
+            </select>
             <textarea
                 className="sm:col-span-2 rounded-md border border-gray-300 px-3 py-2 text-sm"
                 placeholder="Описание"
@@ -179,6 +255,7 @@ export default function ProjectBoard() {
                           onEdit={(updates) => handleEdit(task.id, updates)}
                           onDelete={() => handleDelete(task.id)}
                           disabled={updating === task.id}
+                          projectMembers={projectMembers}
                       />
                   ))}
                   {tasksByStatus[col.key].length === 0 && (

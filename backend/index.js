@@ -1,10 +1,13 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const { connectDB } = require('./config/database');
 const { errorHandler, notFoundHandler, requestLogger } = require('./middleware/errorHandler');
 
+const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
 const projectsRoutes = require('./routes/projects');
 const tasksRoutes = require('./routes/tasks');
 
@@ -17,24 +20,24 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json());
+app.use(cookieParser());
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use(requestLogger);
-}
-
-// Routes
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Project Management API Server',
     version: '2.0.0',
     database: 'MongoDB',
     endpoints: {
+      auth: '/api/auth',
+      users: '/api/users',
       projects: '/api/projects',
       tasks: '/api/projects/:projectId/tasks'
     }
   });
 });
 
+app.use('/api/auth', authRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/projects', projectsRoutes);
 app.use('/api/projects/:projectId/tasks', tasksRoutes);
 app.use('*', notFoundHandler);
@@ -56,4 +59,4 @@ async function startServer() {
   }
 }
 
-startServer();
+void startServer();

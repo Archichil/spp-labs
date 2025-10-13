@@ -4,12 +4,10 @@ const Project = require('../models/Project');
 const Task = require('../models/Task');
 const { isValidString, isValidTaskStatus, sanitizeString } = require('../utils/helpers');
 const { asyncHandler } = require('../middleware/errorHandler');
+const { authenticate } = require('../middleware/auth');
 const mongoose = require('mongoose');
 
-/**
- * GET /api/projects/:projectId/tasks
- */
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', authenticate, asyncHandler(async (req, res) => {
   const { projectId } = req.params;
   
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
@@ -19,6 +17,15 @@ router.get('/', asyncHandler(async (req, res) => {
   const project = await Project.findById(projectId);
   if (!project) {
     return res.status(404).json({ message: 'Project not found' });
+  }
+
+  const isOwner = project.owner && project.owner.toString() === req.user.id;
+  const isMember = project.members && project.members.some(memberId => 
+    memberId.toString() === req.user.id
+  );
+  
+  if (req.user.role === 'user' && !isOwner && !isMember) {
+    return res.status(403).json({ message: 'Access denied' });
   }
   
   const tasks = await Task.find({ project: projectId }).lean();
@@ -34,10 +41,7 @@ router.get('/', asyncHandler(async (req, res) => {
   res.json(response);
 }));
 
-/**
- * GET /api/projects/:projectId/tasks/:taskId
- */
-router.get('/:taskId', asyncHandler(async (req, res) => {
+router.get('/:taskId', authenticate, asyncHandler(async (req, res) => {
   const { projectId, taskId } = req.params;
   
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
@@ -49,8 +53,18 @@ router.get('/:taskId', asyncHandler(async (req, res) => {
   }
   
   const project = await Project.findById(projectId);
+  
   if (!project) {
     return res.status(404).json({ message: 'Project not found' });
+  }
+
+  const isOwner = project.owner && project.owner.toString() === req.user.id;
+  const isMember = project.members && project.members.some(memberId => 
+    memberId.toString() === req.user.id
+  );
+  
+  if (req.user.role === 'user' && !isOwner && !isMember) {
+    return res.status(403).json({ message: 'Access denied' });
   }
   
   const task = await Task.findOne({ _id: taskId, project: projectId }).lean();
@@ -70,10 +84,7 @@ router.get('/:taskId', asyncHandler(async (req, res) => {
   res.json(response);
 }));
 
-/**
- * POST /api/projects/:projectId/tasks
- */
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', authenticate, asyncHandler(async (req, res) => {
   const { projectId } = req.params;
   const { title, description, assignee, status } = req.body;
   
@@ -94,6 +105,15 @@ router.post('/', asyncHandler(async (req, res) => {
   const project = await Project.findById(projectId);
   if (!project) {
     return res.status(404).json({ message: 'Project not found' });
+  }
+
+  const isOwner = project.owner && project.owner.toString() === req.user.id;
+  const isMember = project.members && project.members.some(memberId => 
+    memberId.toString() === req.user.id
+  );
+  
+  if (req.user.role === 'user' && !isOwner && !isMember) {
+    return res.status(403).json({ message: 'Access denied' });
   }
   
   const taskData = {
@@ -117,10 +137,7 @@ router.post('/', asyncHandler(async (req, res) => {
   res.status(201).json(response);
 }));
 
-/**
- * PUT /api/projects/:projectId/tasks/:taskId
- */
-router.put('/:taskId', asyncHandler(async (req, res) => {
+router.put('/:taskId', authenticate, asyncHandler(async (req, res) => {
   const { projectId, taskId } = req.params;
   const { title, description, assignee, status } = req.body;
   
@@ -141,6 +158,15 @@ router.put('/:taskId', asyncHandler(async (req, res) => {
   const project = await Project.findById(projectId);
   if (!project) {
     return res.status(404).json({ message: 'Project not found' });
+  }
+
+  const isOwner = project.owner && project.owner.toString() === req.user.id;
+  const isMember = project.members && project.members.some(memberId => 
+    memberId.toString() === req.user.id
+  );
+  
+  if (req.user.role === 'user' && !isOwner && !isMember) {
+    return res.status(403).json({ message: 'Access denied' });
   }
   
   const updates = {};
@@ -185,10 +211,7 @@ router.put('/:taskId', asyncHandler(async (req, res) => {
   res.json(response);
 }));
 
-/**
- * DELETE /api/projects/:projectId/tasks/:taskId
- */
-router.delete('/:taskId', asyncHandler(async (req, res) => {
+router.delete('/:taskId', authenticate, asyncHandler(async (req, res) => {
   const { projectId, taskId } = req.params;
   
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
@@ -202,6 +225,15 @@ router.delete('/:taskId', asyncHandler(async (req, res) => {
   const project = await Project.findById(projectId);
   if (!project) {
     return res.status(404).json({ message: 'Project not found' });
+  }
+
+  const isOwner = project.owner && project.owner.toString() === req.user.id;
+  const isMember = project.members && project.members.some(memberId => 
+    memberId.toString() === req.user.id
+  );
+  
+  if (req.user.role === 'user' && !isOwner && !isMember) {
+    return res.status(403).json({ message: 'Access denied' });
   }
   
   const deletedTask = await Task.findOneAndDelete({ _id: taskId, project: projectId }).lean();

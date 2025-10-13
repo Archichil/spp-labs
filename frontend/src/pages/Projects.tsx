@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import ProjectList from '../components/ProjectList'
 import { useProjects } from '../context/ProjectsContext'
+import { useAuth } from '../context/AuthContext'
 
 export default function Projects() {
   const { projects, createProject, loading, error } = useProjects()
+  const { user } = useAuth()
   const [name, setName] = useState('')
   const [creating, setCreating] = useState(false)
+  const canCreateProject = user?.role === 'admin' || user?.role === 'manager'
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
@@ -47,22 +50,24 @@ export default function Projects() {
   return (
     <section>
       <h2 className="mb-3 text-xl font-semibold">Проекты</h2>
-      <form onSubmit={handleCreate} className="mb-4 flex gap-2">
-        <input 
-          className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" 
-          placeholder="Название проекта" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)}
-          disabled={creating}
-        />
-        <button 
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed" 
-          type="submit"
-          disabled={creating || !name.trim()}
-        >
-          {creating ? 'Создание...' : 'Создать'}
-        </button>
-      </form>
+      {canCreateProject && (
+        <form onSubmit={handleCreate} className="mb-4 flex gap-2">
+          <input 
+            className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" 
+            placeholder="Название проекта" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)}
+            disabled={creating}
+          />
+          <button 
+            className="rounded-md bg-indigo-600 px-3 py-2 text-sm text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed" 
+            type="submit"
+            disabled={creating || !name.trim()}
+          >
+            {creating ? 'Создание...' : 'Создать'}
+          </button>
+        </form>
+      )}
       <ProjectList projects={projects} onOpen={() => {}} />
     </section>
   )

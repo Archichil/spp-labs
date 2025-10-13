@@ -37,9 +37,13 @@ db.createCollection('projects', {
           bsonType: 'string',
           description: 'Description must be a string'
         },
-        participants: {
+        owner: {
+          bsonType: 'objectId',
+          description: 'Owner must be an ObjectId reference to a user'
+        },
+        members: {
           bsonType: 'array',
-          description: 'Participants must be an array of user IDs'
+          description: 'Members must be an array of user ObjectId references'
         }
       }
     }
