@@ -15,7 +15,7 @@ export default function ProjectCard({ project, onOpen }: ProjectCardProps) {
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">{project.name}</h3>
-        <span className="text-sm text-gray-500">{project.tasks.length} задач</span>
+        <span className="text-sm text-gray-500">{project.tasks.length} tasks</span>
       </div>
     </Link>
   )

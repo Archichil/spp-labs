@@ -28,9 +28,9 @@ export default function Projects() {
   if (loading) {
     return (
       <section>
-        <h2 className="mb-3 text-xl font-semibold">Проекты</h2>
+        <h2 className="mb-3 text-xl font-semibold">Projects</h2>
         <div className="flex items-center justify-center py-8">
-          <div className="text-gray-500">Загрузка проектов...</div>
+          <div className="text-gray-500">Loading projects...</div>
         </div>
       </section>
     )
@@ -39,9 +39,9 @@ export default function Projects() {
   if (error) {
     return (
       <section>
-        <h2 className="mb-3 text-xl font-semibold">Проекты</h2>
+        <h2 className="mb-3 text-xl font-semibold">Projects</h2>
         <div className="rounded-md bg-red-50 border border-red-200 p-4">
-          <div className="text-red-800">Ошибка загрузки: {error}</div>
+          <div className="text-red-800">Loading error: {error}</div>
         </div>
       </section>
     )
@@ -49,12 +49,12 @@ export default function Projects() {
 
   return (
     <section>
-      <h2 className="mb-3 text-xl font-semibold">Проекты</h2>
+      <h2 className="mb-3 text-xl font-semibold">Projects</h2>
       {canCreateProject && (
         <form onSubmit={handleCreate} className="mb-4 flex gap-2">
           <input 
             className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" 
-            placeholder="Название проекта" 
+            placeholder="Project name" 
             value={name} 
             onChange={(e) => setName(e.target.value)}
             disabled={creating}
@@ -64,7 +64,7 @@ export default function Projects() {
             type="submit"
             disabled={creating || !name.trim()}
           >
-            {creating ? 'Создание...' : 'Создать'}
+            {creating ? 'Creating...' : 'Create'}
           </button>
         </form>
       )}

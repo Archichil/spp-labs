@@ -65,9 +65,9 @@ export default function ProjectBoard() {
   if (loading) {
     return (
         <div>
-          <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← К списку проектов</button>
+          <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← Back to projects</button>
           <div className="flex items-center justify-center py-8">
-            <div className="text-gray-500">Загрузка проекта...</div>
+            <div className="text-gray-500">Loading project...</div>
           </div>
         </div>
     )
@@ -76,9 +76,9 @@ export default function ProjectBoard() {
   if (error) {
     return (
         <div>
-          <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← К списку проектов</button>
+          <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← Back to projects</button>
           <div className="rounded-md bg-red-50 border border-red-200 p-4">
-            <div className="text-red-800">Ошибка загрузки: {error}</div>
+            <div className="text-red-800">Loading error: {error}</div>
           </div>
         </div>
     )
@@ -87,8 +87,8 @@ export default function ProjectBoard() {
   if (!project) {
     return (
         <div>
-          <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← К списку проектов</button>
-          <div className="text-gray-500">Проект не найден</div>
+          <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← Back to projects</button>
+          <div className="text-gray-500">Project not found</div>
         </div>
     )
   }
@@ -157,7 +157,7 @@ export default function ProjectBoard() {
 
   return (
       <div>
-        <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← К списку проектов</button>
+        <button onClick={() => navigate('/projects')} className="mb-4 text-sm text-indigo-600 hover:underline">← Back to projects</button>
         
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">{project.name}</h2>
@@ -188,11 +188,11 @@ export default function ProjectBoard() {
         )}
 
         <div className="mb-6 rounded-md border border-gray-200 bg-white p-4">
-          <h3 className="mb-3 text-base font-medium">Создать задачу</h3>
+          <h3 className="mb-3 text-base font-medium">Create Task</h3>
           <form onSubmit={handleCreateTask} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <input
                 className="rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Название"
+                placeholder="Title"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 disabled={creating}
@@ -203,7 +203,7 @@ export default function ProjectBoard() {
                 onChange={(e) => setForm({ ...form, assignee: e.target.value })}
                 disabled={creating || loadingMembers}
             >
-              <option value="">Выберите исполнителя</option>
+              <option value="">Select assignee</option>
               {projectMembers.map((member) => (
                 <option key={member.id} value={member.username}>
                   {member.username} ({member.email})
@@ -212,7 +212,7 @@ export default function ProjectBoard() {
             </select>
             <textarea
                 className="sm:col-span-2 rounded-md border border-gray-300 px-3 py-2 text-sm"
-                placeholder="Описание"
+                placeholder="Description"
                 rows={3}
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -234,7 +234,7 @@ export default function ProjectBoard() {
                   className="rounded-md bg-indigo-600 px-3 py-2 text-sm text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={creating || !form.title.trim()}
               >
-                {creating ? 'Добавление...' : 'Добавить'}
+                {creating ? 'Adding...' : 'Add'}
               </button>
             </div>
           </form>
@@ -261,7 +261,7 @@ export default function ProjectBoard() {
                       />
                   ))}
                   {tasksByStatus[col.key].length === 0 && (
-                      <div className="text-center text-xs text-gray-400">Нет задач</div>
+                      <div className="text-center text-xs text-gray-400">No tasks</div>
                   )}
                 </div>
               </div>

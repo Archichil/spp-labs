@@ -8,7 +8,7 @@ export interface ProjectListProps {
 
 export default function ProjectList({ projects, onOpen }: ProjectListProps) {
   if (!projects.length) {
-    return <p className="text-gray-500">Проекты отсутствуют</p>
+    return <p className="text-gray-500">No projects available</p>
   }
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">

@@ -48,9 +48,9 @@ export default function Nav() {
   return (
     <nav className="mb-4 flex items-center justify-between">
       <div className="flex items-center">
-        {item("home", "Главная", "/")}
-        {isAuthenticated && item("projects", "Проекты", "/projects")}
-        {isAuthenticated && item("profile", "Профиль", "/profile")}
+        {item("home", "Home", "/")}
+        {isAuthenticated && item("projects", "Projects", "/projects")}
+        {isAuthenticated && item("profile", "Profile", "/profile")}
         {isAuthenticated && user?.role === 'admin' && item("admin", "Users", "/admin/users")}
       </div>
 

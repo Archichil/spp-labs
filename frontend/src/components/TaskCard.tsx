@@ -105,13 +105,13 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
         <input
           className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-sm"
           value={form.title}
-          placeholder="Название"
+          placeholder="Title"
           onChange={(e) => setForm({ ...form, title: e.target.value })}
         />
         <textarea
           className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-xs"
           rows={3}
-          placeholder="Описание"
+          placeholder="Description"
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
@@ -121,7 +121,7 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
             value={form.assignee}
             onChange={(e) => setForm({ ...form, assignee: e.target.value })}
           >
-            <option value="">Выберите исполнителя</option>
+            <option value="">Select assignee</option>
             {projectMembers.map((member) => (
               <option key={member.id} value={member.username}>
                 {member.username} ({member.email})
@@ -131,7 +131,7 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
         ) : (
           <input
             className="mb-2 w-full rounded border border-gray-300 px-2 py-1 text-xs"
-            placeholder="Исполнитель"
+            placeholder="Assignee"
             value={form.assignee}
             onChange={(e) => setForm({ ...form, assignee: e.target.value })}
           />
@@ -151,14 +151,14 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
             className="rounded bg-indigo-600 px-2 py-1 text-xs text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={disabled}
           >
-            Сохранить
+            Save
           </button>
           <button 
             onClick={cancelEdit} 
             className="rounded bg-gray-200 px-2 py-1 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={disabled}
           >
-            Отмена
+            Cancel
           </button>
         </div>
       </div>
@@ -173,8 +173,8 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
           {onEdit && (
             <button
               onClick={startEdit}
-              aria-label="Редактировать"
-              title="Редактировать"
+              aria-label="Edit"
+              title="Edit"
               className="inline-flex h-7 w-7 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={disabled}
             >
@@ -184,8 +184,8 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
           {onDelete && (
             <button
               onClick={onDelete}
-              aria-label="Удалить"
-              title="Удалить"
+              aria-label="Delete"
+              title="Delete"
               className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={disabled}
             >
@@ -195,7 +195,7 @@ export default function TaskCard({ task, onEdit, onDelete, disabled = false, pro
         </div>
       </div>
       <div className="mb-2 whitespace-pre-wrap break-words text-xs text-gray-600">{task.description}</div>
-      <div className="text-xs text-gray-500 mb-2">Исполнитель: {task.assignee || 'Неизвестно'}</div>
+      <div className="text-xs text-gray-500 mb-2">Assignee: {task.assignee || 'Unknown'}</div>
       
       {/* Attachments Section */}
       {task.attachments && task.attachments.length > 0 && (
