@@ -195,6 +195,65 @@ export const tasksApi = {
       method: 'DELETE',
     })
   },
+
+  async uploadAttachment(projectId: string, taskId: string, file: File): Promise<any> {
+    const formData = new FormData()
+    formData.append('file', file)
+    
+    const url = `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/projects/${projectId}/tasks/${taskId}/attachments`
+    
+    const headers: Record<string, string> = {}
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`
+    }
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: formData,
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new ApiError(errorData.message || 'Upload failed', response.status)
+    }
+
+    return response.json()
+  },
+
+  async downloadAttachment(projectId: string, taskId: string, attachmentId: string, originalName: string): Promise<void> {
+    const url = `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/projects/${projectId}/tasks/${taskId}/attachments/${attachmentId}/download`
+    
+    const headers: Record<string, string> = {}
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`
+    }
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers,
+    })
+
+    if (!response.ok) {
+      throw new ApiError('Download failed', response.status)
+    }
+
+    const blob = await response.blob()
+    const downloadUrl = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = downloadUrl
+    a.download = originalName
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(downloadUrl)
+  },
+
+  async deleteAttachment(projectId: string, taskId: string, attachmentId: string): Promise<void> {
+    return fetchApi(`/projects/${projectId}/tasks/${taskId}/attachments/${attachmentId}`, {
+      method: 'DELETE',
+    })
+  },
 }
 
 export const usersApi = {

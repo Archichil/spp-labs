@@ -11,7 +11,7 @@ export default function ProjectBoard() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const { projects, addTask, updateTask, deleteTask, deleteProject, loading, error } = useProjects()
+  const { projects, addTask, updateTask, deleteTask, deleteProject, refreshProjects, loading, error } = useProjects()
   const project = projects.find(p => p.id === id)
   const [form, setForm] = useState<{ title: string; description: string; assignee: string; status: Task['status'] }>(
       { title: '', description: '', assignee: '', status: 'todo' }
@@ -256,6 +256,8 @@ export default function ProjectBoard() {
                           onDelete={() => handleDelete(task.id)}
                           disabled={updating === task.id}
                           projectMembers={projectMembers}
+                          projectId={project.id}
+                          onAttachmentChange={refreshProjects}
                       />
                   ))}
                   {tasksByStatus[col.key].length === 0 && (
