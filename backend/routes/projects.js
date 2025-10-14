@@ -30,7 +30,15 @@ router.get('/', authenticate, asyncHandler(async (req, res) => {
       title: task.title,
       description: task.description,
       status: task.status,
-      assignee: task.assignee
+      assignee: task.assignee,
+      attachments: (task.attachments || []).map(att => ({
+        id: att._id.toString(),
+        filename: att.filename,
+        originalName: att.originalName,
+        mimetype: att.mimetype,
+        size: att.size,
+        uploadedAt: att.uploadedAt
+      }))
     }));
     delete project._id;
     delete project.__v;
@@ -86,7 +94,15 @@ router.get('/:id', authenticate, asyncHandler(async (req, res) => {
       title: task.title,
       description: task.description,
       status: task.status,
-      assignee: task.assignee
+      assignee: task.assignee,
+      attachments: (task.attachments || []).map(att => ({
+        id: att._id.toString(),
+        filename: att.filename,
+        originalName: att.originalName,
+        mimetype: att.mimetype,
+        size: att.size,
+        uploadedAt: att.uploadedAt
+      }))
     }))
   };
   

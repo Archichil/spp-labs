@@ -1,11 +1,21 @@
 import type { TaskStatus } from './utils/tasks'
 
+export interface TaskAttachment {
+  id: string
+  filename: string
+  originalName: string
+  mimetype: string
+  size: number
+  uploadedAt: string
+}
+
 export interface Task {
   id: string
   title: string
   description: string
   assignee: string
   status: TaskStatus
+  attachments?: TaskAttachment[]
 }
 
 export type UserRole = 'user' | 'manager' | 'admin'
